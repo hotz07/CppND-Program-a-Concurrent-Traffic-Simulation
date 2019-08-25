@@ -4,11 +4,15 @@
 #include <mutex>
 #include <deque>
 #include <condition_variable>
+
 #include "TrafficObject.h"
+
 
 // forward declarations to avoid include cycle
 class Vehicle;
 
+// TrafficLightPhase is an enum that can be either „red“ or „green“.
+enum class TrafficLightPhase{red,green};
 
 // FP.3 Define a class „MessageQueue“ which has the public methods send and receive. 
 // Send should take an rvalue reference of type TrafficLightPhase whereas receive should return this type. 
@@ -19,8 +23,10 @@ template <class T>
 class MessageQueue
 {
 public:
-    TrafficLightPhase MessageQueue<TrafficLightPhase>::receive();
-    void send(TrafficLightPhase &&msg);    
+    
+    T receive();
+    
+    void send(T &&msg);
 
 private:
     std::condition_variable _condition;
@@ -34,21 +40,14 @@ private:
 // can be either „red“ or „green“. Also, add the private method „void cycleThroughPhases()“. 
 // Furthermore, there shall be the private member _currentPhase which can take „red“ or „green“ as its value. 
 
-enum struct TrafficLightPhase
-{
-    red,
-    green
-};
+
 
 class TrafficLight : public TrafficObject
 {
 public:
     // constructor / desctructor
     TrafficLight();
-
-    ~TrafficLight();
-
-
+    ~TrafficLight();    
 
     // getters / setters
     TrafficLightPhase getCurrentPhase();
