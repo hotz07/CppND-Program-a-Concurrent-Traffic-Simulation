@@ -3,6 +3,7 @@
 #include <chrono>
 #include <future>
 #include <random>
+#include <time.h>
 
 #include "TrafficLight.h"
 
@@ -63,7 +64,8 @@ void TrafficLight::waitForGreen()
     // Once it receives TrafficLightPhase::green, the method returns.
     while (true)    
     {        
-        std::shared_ptr<MessageQueue<TrafficLightPhase>> queue(new MessageQueue<TrafficLightPhase>);   
+        // std::shared_ptr<MessageQueue<TrafficLightPhase>> queue(new MessageQueue<TrafficLightPhase>);   
+      
         TrafficLightPhase message = queue->receive();
         if(message == TrafficLightPhase::green)
         {
@@ -93,8 +95,9 @@ void TrafficLight::cycleThroughPhases()
     // and toggles the current phase of the traffic light between red and green and sends an update method 
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds. 
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
-         
-    double cycleDuration = rand() % 6 + 4; // duration of a single simulation cycle in ms
+  
+    srand((unsigned int)time(NULL));
+    double cycleDuration = rand() % 6000 + 4000; // duration of a single simulation cycle in ms
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
     lastUpdate = std::chrono::system_clock::now();
   
@@ -118,8 +121,10 @@ void TrafficLight::cycleThroughPhases()
                 _currentPhase = TrafficLightPhase::green;
             }
             
-            //update method to the message queue using move semantics.                    
-            std::shared_ptr<MessageQueue<TrafficLightPhase>> queue(new MessageQueue<TrafficLightPhase>);             
+            // update method to the message queue using move semantics.       
+          
+            // std::shared_ptr<MessageQueue<TrafficLightPhase>> queue(new MessageQueue<TrafficLightPhase>);         
+                      
             std::async(&MessageQueue<TrafficLightPhase>::send, queue, std::move(_currentPhase));
 
             // reset stop watch for next cycle
